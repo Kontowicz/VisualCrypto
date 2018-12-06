@@ -1,0 +1,44 @@
+﻿<Window x:Class="VisualCrypro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VisualCrypro"
+        mc:Ignorable="d"
+        Title="VisualCrypto" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Height="20" VerticalAlignment="Top">
+          <MenuItem Header="Otwórz" Click="save"/>
+          <MenuItem Header="Zapisz" Click="open"/>
+          <MenuItem Header="O programie" Click="about"/>
+        </Menu>
+        <ComboBox Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10,0,10" Name="parts">
+          <ComboBoxItem Content="2"/>
+          <ComboBoxItem Content="4"/>
+        </ComboBox>
+        <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="8" Grid.RowSpan="7" Margin="30,20,30,20" BorderThickness="4" BorderBrush="Black" Name="border">
+        <Image Name="img"/>
+        </Border>
+    </Grid>
+</Window>
