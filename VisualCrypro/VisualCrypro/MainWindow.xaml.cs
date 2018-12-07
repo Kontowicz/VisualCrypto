@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Drawing;
 
 namespace VisualCrypro
 {
@@ -23,6 +24,24 @@ namespace VisualCrypro
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void threshold(ref Bitmap img)
+        {
+            for(int i = 0; i < img.Height; ++i)
+            {
+                for(int j = 0; j < img.Width; ++j)
+                {
+                    var p = img.GetPixel(j, i);
+                    int[] tmp = new int[4];
+                    tmp[0] = p.R;
+                    tmp[1] = p.G;
+                    tmp[2] = p.B;
+                    tmp[3] = p.A;
+                    int avg = (int)tmp.Average();
+                    img.SetPixel(j, i, System.Drawing.Color.FromArgb(avg, avg, avg, avg));
+                }
+            }
         }
 
         private void save(object sender, RoutedEventArgs e)
@@ -39,5 +58,8 @@ namespace VisualCrypro
         {
             throw new NotImplementedException();
         }
+
+
+
     }
 }
