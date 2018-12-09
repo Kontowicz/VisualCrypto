@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Drawing;
 using Microsoft.Win32;
 using System.IO;
+using System.Diagnostics;
 
 namespace VisualCrypro
 {
@@ -24,6 +25,7 @@ namespace VisualCrypro
     public partial class MainWindow : Window
     {
         private Bitmap work;
+        private Random random = new Random();
         public MainWindow()
         {
             InitializeComponent();
@@ -104,12 +106,6 @@ namespace VisualCrypro
             throw new NotImplementedException();
         }
 
-        private void thres(object sender, RoutedEventArgs e)
-        {
-            threshold(ref work);
-            img.Source = BitmapToImageSource(work);
-        }
-
         private void hide()
         {
             List<bool[]> white = new List<bool[]>();
@@ -127,6 +123,140 @@ namespace VisualCrypro
             black.Add(new bool[] { true, true, false, false, false, false, true, true } );
             black.Add(new bool[] { false, true, false, true, true, false, true, false } );
             black.Add(new bool[] { true, false, true, false, false, true, false, true } );
+
+            Bitmap part_1 = new Bitmap(work.Width * 2, work.Height * 2);
+            Bitmap part_2 = new Bitmap(work.Width * 2, work.Height * 2);
+
+            for (int i = 0; i < work.Height; ++i)
+            {
+                for (int j = 0; j < work.Width; ++j)
+                {
+                    var p = work.GetPixel(j, i);
+                    bool[] v = new bool[8];
+                    if (p.B == 255)
+                        v = white.ElementAt(random.Next(6));
+                    else
+                        v = black.ElementAt(random.Next(6));
+
+                    int[] value = new int[8];
+                    for (int z = 0; z < 6; z++)
+                        value[z] = v[z] == true ? 255 : 0;
+
+                    part_1.SetPixel(2 * j, 2 * i, System.Drawing.Color.FromArgb(value[0], value[0], value[0], value[0]));
+                    part_1.SetPixel(2 * j, (2 * i) + 1, System.Drawing.Color.FromArgb(value[1], value[1], value[1], value[1]));
+
+                    part_1.SetPixel((2 * j) + 1, 2 * i, System.Drawing.Color.FromArgb(value[2], value[2], value[2], value[2]));
+                    part_1.SetPixel((2 * j) + 1, (2 * i) + 1, System.Drawing.Color.FromArgb(value[3], value[3], value[3], value[3]));
+
+                    part_2.SetPixel(2 * j, 2 * i, System.Drawing.Color.FromArgb(value[4], value[4], value[4], value[4]));
+                    part_2.SetPixel(2 * j, (2 * i) + 1, System.Drawing.Color.FromArgb(value[5], value[5], value[5], value[5]));
+
+                    part_2.SetPixel((2 * j) + 1, 2 * i, System.Drawing.Color.FromArgb(value[6], value[6], value[6], value[6]));
+                    part_2.SetPixel((2 * j) + 1, (2 * i) + 1, System.Drawing.Color.FromArgb(value[7], value[7], value[7], value[7]));
+                }
+            }
+            System.IO.Directory.CreateDirectory(@".\Parts\");
+            string dirName = DateTime.Now.ToString("yyyy_dd_M HH_mm_ss");
+            System.IO.Directory.CreateDirectory(@".\Parts\" + dirName);
+
+            part_1.Save(@".\Parts\" + dirName + @"\part_1.bmp");
+            part_2.Save(@".\Parts\" + dirName + @"\part_2.bmp");
+        }
+
+        private void hide(object sender, RoutedEventArgs e)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            threshold(ref work);
+            img.Source = BitmapToImageSource(work);
+            hide();
+            stopwatch.Stop();
+            MessageBox.Show("Operacje zajęły: " + stopwatch.Elapsed , "Czas");
+        }
+
+        private Bitmap merge(Bitmap part_1, Bitmap part_2)
+        {
+            Bitmap result = new Bitmap(part_1.Width / 2, part_1.Height / 2);
+
+            List<bool[]> white = new List<bool[]>();
+            white.Add(new bool[] { false, false, true, true, false, false, true, true });
+            white.Add(new bool[] { true, true, false, false, true, true, false, false });
+            white.Add(new bool[] { false, true, false, true, false, true, false, true });
+            white.Add(new bool[] { true, false, true, false, true, false, true, false });
+            white.Add(new bool[] { false, true, true, false, false, true, true, false });
+            white.Add(new bool[] { true, false, false, true, true, false, false, true });
+
+            for (int i = 0; i < result.Height; ++i)
+            {
+                for (int j = 0; j < result.Width; ++j)
+                {
+                    bool[] tmp = new bool[8];
+
+                    //part_1.SetPixel(2 * j, 2 * i, System.Drawing.Color.FromArgb(value[0], value[0], value[0], value[0]));
+                    //part_1.SetPixel(2 * j, (2 * i) + 1, System.Drawing.Color.FromArgb(value[1], value[1], value[1], value[1]));
+
+                    //part_1.SetPixel((2 * j) + 1, 2 * i, System.Drawing.Color.FromArgb(value[2], value[2], value[2], value[2]));
+                    //part_1.SetPixel((2 * j) + 1, (2 * i) + 1, System.Drawing.Color.FromArgb(value[3], value[3], value[3], value[3]));
+
+                    //part_2.SetPixel(2 * j, 2 * i, System.Drawing.Color.FromArgb(value[4], value[4], value[4], value[4]));
+                    //part_2.SetPixel(2 * j, (2 * i) + 1, System.Drawing.Color.FromArgb(value[5], value[5], value[5], value[5]));
+
+                    //part_2.SetPixel((2 * j) + 1, 2 * i, System.Drawing.Color.FromArgb(value[6], value[6], value[6], value[6]));
+                    //part_2.SetPixel((2 * j) + 1, (2 * i) + 1, System.Drawing.Color.FromArgb(value[7], value[7], value[7], value[7]));
+
+                    tmp[0] = part_1.GetPixel(2 * j, 2 * i).B == 255 ? true : false;
+                    tmp[1] = part_1.GetPixel(2 * j, (2 * i) + 1).B == 255 ? true : false;
+                    tmp[2] = part_1.GetPixel((2 * j) + 1, 2 * i).B == 255 ? true : false;
+                    tmp[3] = part_1.GetPixel((2 * j) + 1, (2 * i) + 1).B == 255 ? true : false;
+
+                    tmp[4] = part_2.GetPixel(2 * j, 2 * i).B == 255 ? true : false;
+                    tmp[5] = part_2.GetPixel(2 * j, (2 * i) + 1).B == 255 ? true : false;
+                    tmp[6] = part_2.GetPixel((2 * j) + 1, 2 * i).B == 255 ? true : false;
+                    tmp[7] = part_2.GetPixel((2 * j) + 1, (2 * i) + 1).B == 255 ? true : false;
+
+                    if (white.ElementAt(0).SequenceEqual(tmp) ||
+                        white.ElementAt(1).SequenceEqual(tmp) ||
+                        white.ElementAt(2).SequenceEqual(tmp) ||
+                        white.ElementAt(3).SequenceEqual(tmp) ||
+                        white.ElementAt(4).SequenceEqual(tmp) ||
+                        white.ElementAt(5).SequenceEqual(tmp) 
+                        )
+                    {
+                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(0,0,0,0));
+                    }
+                    else
+                    {
+                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(255,255,255,255));
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private void merge(object sender, RoutedEventArgs e)
+        {
+            Bitmap part_1 = null;
+            Bitmap part_2 = null;
+            try
+            {
+                OpenFileDialog op = new OpenFileDialog();
+                op.Title = "Select a picture";
+                op.Filter = "Portable Network Graphic (*.png)|*.png|" + "Bmp files (*.bmp)|*.bmp";
+                if (op.ShowDialog() == true)
+
+                    part_1 = new Bitmap(op.FileName);
+
+                if (op.ShowDialog() == true)
+                    part_2 = new Bitmap(op.FileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Orginal message:" + ex.Message, "Błąd");
+            }
+
+            img.Source = BitmapToImageSource(merge(part_1, part_2));
+
         }
     }
 }
