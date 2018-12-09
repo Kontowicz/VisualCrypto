@@ -103,7 +103,14 @@ namespace VisualCrypro
         }
         private void about(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            try
+            {
+                System.Diagnostics.Process.Start(@"..\..\about.html");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Orginal message:" + ex.Message, "Błąd");
+            }
         }
 
         private void hide()
@@ -191,18 +198,6 @@ namespace VisualCrypro
                 for (int j = 0; j < result.Width; ++j)
                 {
                     bool[] tmp = new bool[8];
-
-                    //part_1.SetPixel(2 * j, 2 * i, System.Drawing.Color.FromArgb(value[0], value[0], value[0], value[0]));
-                    //part_1.SetPixel(2 * j, (2 * i) + 1, System.Drawing.Color.FromArgb(value[1], value[1], value[1], value[1]));
-
-                    //part_1.SetPixel((2 * j) + 1, 2 * i, System.Drawing.Color.FromArgb(value[2], value[2], value[2], value[2]));
-                    //part_1.SetPixel((2 * j) + 1, (2 * i) + 1, System.Drawing.Color.FromArgb(value[3], value[3], value[3], value[3]));
-
-                    //part_2.SetPixel(2 * j, 2 * i, System.Drawing.Color.FromArgb(value[4], value[4], value[4], value[4]));
-                    //part_2.SetPixel(2 * j, (2 * i) + 1, System.Drawing.Color.FromArgb(value[5], value[5], value[5], value[5]));
-
-                    //part_2.SetPixel((2 * j) + 1, 2 * i, System.Drawing.Color.FromArgb(value[6], value[6], value[6], value[6]));
-                    //part_2.SetPixel((2 * j) + 1, (2 * i) + 1, System.Drawing.Color.FromArgb(value[7], value[7], value[7], value[7]));
 
                     tmp[0] = part_1.GetPixel(2 * j, 2 * i).B == 255 ? true : false;
                     tmp[1] = part_1.GetPixel(2 * j, (2 * i) + 1).B == 255 ? true : false;

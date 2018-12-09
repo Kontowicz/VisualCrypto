@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>O programie.</title>
+	</head>
+
+	<body>
+        <h1>Autor programu: Piotr Kontowicz, student 3 roku inrmatyki na wydziale elektrycznym.</h1>
+
+        <h2>Opis programu.</h2>
+        Program umożliwia rozbicie wczytanego zdjęcia na dwa udziały. Użytkownik może wczytać zdjęcie kolorowe lub binarne w formacie *.bmp lub *.png. Wczytane zdjęcie zostanie poddane 
+        operacji progowania binarnego, a następnie zostaną wyznaczone dwa udziały i zapisane w folerze nadrzędnym o nazwie Parts\[data generacji udziałów] względem pliku exe aplikacji, 
+        działy zostaną zapisane w formacie bmp. Program również umożliwia połączenie dwóch udziałów aby odczytać ukrytą wiadomość.
+
+        <h2>Opis algorytmu.</h2>
+        <h3>Wyznaczanie udziałów.</h3>
+        Iterujemy po obrazie którego udziały chcemy wyznaczyć o zależności od tego czy dany piksel jest biały czy czarny wybieramy losowo odpowiednią macierz i zgodnie z nią odpowiadnio ustawiamy
+        piksele w obu udziałach.
+        <h3>Wyznaczanie wiadomości z udziałów.</h3>
+        Na postawie pobieranych w odpowiedniej kolejności pikseli z udziałów określamy czy piksel w orginalenej wiadomości jest czarny czy biały. Na postawie tej decyzji odpowiednio ustawiamy piksel 
+        w wynikowym obrazie.
+	</body>
+</html>
