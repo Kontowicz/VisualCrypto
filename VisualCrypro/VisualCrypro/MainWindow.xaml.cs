@@ -24,7 +24,7 @@ namespace VisualCrypro
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Bitmap work;
+        private Bitmap work = null;
         private Random random = new Random();
         public MainWindow()
         {
@@ -113,7 +113,50 @@ namespace VisualCrypro
             }
         }
 
-        private void hide()
+        private void hideTwoPixel()
+        {
+            List<bool[]> white = new List<bool[]>();
+            white.Add(new bool[] { false, true, false, true });
+            white.Add(new bool[] { true, false, true, false });
+
+            List<bool[]> black = new List<bool[]>();
+            black.Add(new bool[] { true, false, false, true });
+            black.Add(new bool[] { false, true, true, false });
+
+            Bitmap part_1 = new Bitmap(work.Width * 2, work.Height);
+            Bitmap part_2 = new Bitmap(work.Width * 2, work.Height);
+
+            for (int i = 0; i < work.Height; ++i)
+            {
+                for (int j = 0; j < work.Width; ++j)
+                {
+                    var p = work.GetPixel(j, i);
+                    bool[] v = new bool[4];
+                    if (p.B == 255)
+                        v = white.ElementAt(random.Next(2));
+                    else
+                        v = black.ElementAt(random.Next(2));
+
+                    int[] value = new int[8];
+                    for (int z = 0; z < 4; z++)
+                        value[z] = v[z] == true ? 255 : 0;
+
+                    part_1.SetPixel(2 * j, i, System.Drawing.Color.FromArgb(value[0], value[0], value[0], value[0]));
+                    part_1.SetPixel((2 * j) + 1, i, System.Drawing.Color.FromArgb(value[1], value[1], value[1], value[1]));
+
+                    part_2.SetPixel(2 * j, i, System.Drawing.Color.FromArgb(value[2], value[2], value[2], value[2]));
+                    part_2.SetPixel((2 * j) + 1, i, System.Drawing.Color.FromArgb(value[3], value[3], value[3], value[3]));
+                }
+            }
+            System.IO.Directory.CreateDirectory(@".\Parts\");
+            string dirName = DateTime.Now.ToString("yyyy_dd_M HH_mm_ss");
+            System.IO.Directory.CreateDirectory(@".\Parts\" + dirName);
+
+            part_1.Save(@".\Parts\" + dirName + @"\part_1.bmp");
+            part_2.Save(@".\Parts\" + dirName + @"\part_2.bmp");
+        }
+
+        private void hideFourPixel()
         {
             List<bool[]> white = new List<bool[]>();
             white.Add(new bool[] { false, false, true, true, false, false, true, true } );
@@ -172,16 +215,25 @@ namespace VisualCrypro
 
         private void hide(object sender, RoutedEventArgs e)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            threshold(ref work);
-            img.Source = BitmapToImageSource(work);
-            hide();
-            stopwatch.Stop();
-            MessageBox.Show("Operacje zajęły: " + stopwatch.Elapsed , "Czas");
+            try
+            {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                threshold(ref work);
+                img.Source = BitmapToImageSource(work);
+                if (two.IsChecked == true)
+                    hideTwoPixel();
+                else
+                    hideTwoPixel();
+                stopwatch.Stop();
+                MessageBox.Show("Operacje zajęły: " + stopwatch.Elapsed, "Czas");
+            }catch(Exception ex)
+            {
+                MessageBox.Show("Orginal message:" + ex.Message, "Błąd");
+            }
         }
 
-        private Bitmap merge(Bitmap part_1, Bitmap part_2)
+        private Bitmap mergeFourPixel(Bitmap part_1, Bitmap part_2)
         {
             Bitmap result = new Bitmap(part_1.Width / 2, part_1.Height / 2);
 
@@ -229,6 +281,42 @@ namespace VisualCrypro
             return result;
         }
 
+        private Bitmap mergeTwoPixel(Bitmap part_1, Bitmap part_2)
+        {
+            Bitmap result = new Bitmap(part_1.Width / 2, part_1.Height);
+
+            List<bool[]> white = new List<bool[]>();
+            white.Add(new bool[] { false, true, false, true });
+            white.Add(new bool[] { true, false, true, false });
+
+            for (int i = 0; i < result.Height; ++i)
+            {
+                for (int j = 0; j < result.Width; ++j)
+                {
+                    bool[] tmp = new bool[4];
+
+                    tmp[0] = part_1.GetPixel(2 * j, i).B == 255 ? true : false;
+                    tmp[1] = part_1.GetPixel((2 * j) + 1, i).B == 255 ? true : false;
+                    
+                    tmp[2] = part_2.GetPixel(2 * j, i).B == 255 ? true : false;
+                    tmp[3] = part_2.GetPixel((2 * j) + 1, i).B == 255 ? true : false;
+
+                    if (white.ElementAt(0).SequenceEqual(tmp) ||
+                        white.ElementAt(1).SequenceEqual(tmp)                        
+                        )
+                    {
+                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(0, 0, 0, 0));
+                    }
+                    else
+                    {
+                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(255, 255, 255, 255));
+                    }
+                }
+            }
+
+            return result;
+        }
+
         private void merge(object sender, RoutedEventArgs e)
         {
             Bitmap part_1 = null;
@@ -249,8 +337,14 @@ namespace VisualCrypro
             {
                 MessageBox.Show("Orginal message:" + ex.Message, "Błąd");
             }
-
-            img.Source = BitmapToImageSource(merge(part_1, part_2));
+            try
+            {
+                work = two.IsChecked == true ? mergeTwoPixel(part_1, part_2) : mergeFourPixel(part_1, part_2);
+                img.Source = BitmapToImageSource(work);
+            } catch(Exception ex)
+            {
+                MessageBox.Show("Orginal message:" + ex.Message, "Błąd");
+            }
 
         }
     }
