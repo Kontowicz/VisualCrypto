@@ -105,7 +105,7 @@ namespace VisualCrypro
         {
             try
             {
-                System.Diagnostics.Process.Start(@"..\..\about.html");
+                System.Diagnostics.Process.Start(@".\about.html");
             }
             catch (Exception ex)
             {
@@ -139,7 +139,7 @@ namespace VisualCrypro
 
                     int[] value = new int[8];
                     for (int z = 0; z < 4; z++)
-                        value[z] = v[z] == true ? 255 : 0;
+                        value[z] = v[z] != true ? 255 : 0;
 
                     part_1.SetPixel(2 * j, i, System.Drawing.Color.FromArgb(value[0], value[0], value[0], value[0]));
                     part_1.SetPixel((2 * j) + 1, i, System.Drawing.Color.FromArgb(value[1], value[1], value[1], value[1]));
@@ -190,7 +190,7 @@ namespace VisualCrypro
 
                     int[] value = new int[8];
                     for (int z = 0; z < 6; z++)
-                        value[z] = v[z] == true ? 255 : 0;
+                        value[z] = v[z] != true ? 255 : 0;
 
                     part_1.SetPixel(2 * j, 2 * i, System.Drawing.Color.FromArgb(value[0], value[0], value[0], value[0]));
                     part_1.SetPixel(2 * j, (2 * i) + 1, System.Drawing.Color.FromArgb(value[1], value[1], value[1], value[1]));
@@ -235,6 +235,10 @@ namespace VisualCrypro
 
         private Bitmap mergeFourPixel(Bitmap part_1, Bitmap part_2)
         {
+            if (part_1.Width != part_2.Width || part_1.Height != part_2.Height)
+            {
+                throw new Exception("Złe rozmiary udziałów!");
+            }
             Bitmap result = new Bitmap(part_1.Width / 2, part_1.Height / 2);
 
             List<bool[]> white = new List<bool[]>();
@@ -251,15 +255,15 @@ namespace VisualCrypro
                 {
                     bool[] tmp = new bool[8];
 
-                    tmp[0] = part_1.GetPixel(2 * j, 2 * i).B == 255 ? true : false;
-                    tmp[1] = part_1.GetPixel(2 * j, (2 * i) + 1).B == 255 ? true : false;
-                    tmp[2] = part_1.GetPixel((2 * j) + 1, 2 * i).B == 255 ? true : false;
-                    tmp[3] = part_1.GetPixel((2 * j) + 1, (2 * i) + 1).B == 255 ? true : false;
+                    tmp[0] = part_1.GetPixel(2 * j, 2 * i).B != 255 ? true : false;
+                    tmp[1] = part_1.GetPixel(2 * j, (2 * i) + 1).B != 255 ? true : false;
+                    tmp[2] = part_1.GetPixel((2 * j) + 1, 2 * i).B != 255 ? true : false;
+                    tmp[3] = part_1.GetPixel((2 * j) + 1, (2 * i) + 1).B != 255 ? true : false;
 
-                    tmp[4] = part_2.GetPixel(2 * j, 2 * i).B == 255 ? true : false;
-                    tmp[5] = part_2.GetPixel(2 * j, (2 * i) + 1).B == 255 ? true : false;
-                    tmp[6] = part_2.GetPixel((2 * j) + 1, 2 * i).B == 255 ? true : false;
-                    tmp[7] = part_2.GetPixel((2 * j) + 1, (2 * i) + 1).B == 255 ? true : false;
+                    tmp[4] = part_2.GetPixel(2 * j, 2 * i).B != 255 ? true : false;
+                    tmp[5] = part_2.GetPixel(2 * j, (2 * i) + 1).B != 255 ? true : false;
+                    tmp[6] = part_2.GetPixel((2 * j) + 1, 2 * i).B != 255 ? true : false;
+                    tmp[7] = part_2.GetPixel((2 * j) + 1, (2 * i) + 1).B != 255 ? true : false;
 
                     if (white.ElementAt(0).SequenceEqual(tmp) ||
                         white.ElementAt(1).SequenceEqual(tmp) ||
@@ -269,11 +273,11 @@ namespace VisualCrypro
                         white.ElementAt(5).SequenceEqual(tmp) 
                         )
                     {
-                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(0,0,0,0));
+                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(255, 255, 255, 255));
                     }
                     else
                     {
-                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(255,255,255,255));
+                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(0, 0, 0, 0)); 
                     }
                 }
             }
@@ -283,6 +287,10 @@ namespace VisualCrypro
 
         private Bitmap mergeTwoPixel(Bitmap part_1, Bitmap part_2)
         {
+            if (part_1.Width != part_2.Width || part_1.Height != part_2.Height)
+            {
+                throw new Exception("Złe rozmiary udziałów!");
+            }
             Bitmap result = new Bitmap(part_1.Width / 2, part_1.Height);
 
             List<bool[]> white = new List<bool[]>();
@@ -295,21 +303,21 @@ namespace VisualCrypro
                 {
                     bool[] tmp = new bool[4];
 
-                    tmp[0] = part_1.GetPixel(2 * j, i).B == 255 ? true : false;
-                    tmp[1] = part_1.GetPixel((2 * j) + 1, i).B == 255 ? true : false;
+                    tmp[0] = part_1.GetPixel(2 * j, i).B != 255 ? true : false;
+                    tmp[1] = part_1.GetPixel((2 * j) + 1, i).B != 255 ? true : false;
                     
-                    tmp[2] = part_2.GetPixel(2 * j, i).B == 255 ? true : false;
-                    tmp[3] = part_2.GetPixel((2 * j) + 1, i).B == 255 ? true : false;
+                    tmp[2] = part_2.GetPixel(2 * j, i).B != 255 ? true : false;
+                    tmp[3] = part_2.GetPixel((2 * j) + 1, i).B != 255 ? true : false;
 
                     if (white.ElementAt(0).SequenceEqual(tmp) ||
                         white.ElementAt(1).SequenceEqual(tmp)                        
                         )
                     {
-                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(0, 0, 0, 0));
+                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(255, 255, 255, 255));
                     }
                     else
                     {
-                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(255, 255, 255, 255));
+                        result.SetPixel(j, i, System.Drawing.Color.FromArgb(0, 0, 0, 0));
                     }
                 }
             }
