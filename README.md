@@ -7,21 +7,21 @@ Program służączy do dzielenia obrazu na dwa sekrety. Rozwiazanie takie daje w
 </p>
 
 <p align="center">
-  <img src="../master/ss.PNG" width="350" title="Game start.">
+  <img src="../master/newrandom.png" width="350" title="Game start.">
   <br>
   <em>Obraz który zostanie poddany podziałowi.</em>
 </p>
 
 
 <p align="center">
-  <img src="../master/part_1.bmp" width="350" title="Game start.">
+  <img src="../master/part_1.png" width="350" title="Game start.">
   <br>
   <em>Udział pierwszy.</em>
 </p>
 
 
 <p align="center">
-  <img src="../master/part_2.bmp" width="350" title="Game start.">
+  <img src="../master/part_2.png" width="350" title="Game start.">
   <br>
   <em>Udział drugi.</em>
 </p>
